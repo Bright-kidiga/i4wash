@@ -5,6 +5,9 @@ app_description = "innovate4wash"
 app_email = "none@example.com"
 app_license = "mit"
 
+
+fixtures = ["Custom Field", "Property Setter", "Print Format", "Server Script", "DocType"]
+
 # Apps
 # ------------------
 
