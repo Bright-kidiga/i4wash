@@ -8,6 +8,9 @@ app_license = "mit"
 
 fixtures = ["Custom Field", "Property Setter", "Print Format", "Server Script", "DocType"]
 
+webhooks = {
+    "/api/method/i4wash.api.stripe_webhook.stripe_webhook": "Stripe"
+}
 # Apps
 # ------------------
 

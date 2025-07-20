@@ -39,7 +39,7 @@
   },
   {
    "fieldname": "phone_number",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "label": "Phone Number"
   },
   {
@@ -115,7 +115,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-11 13:36:58.225683",
+ "modified": "2025-07-15 20:55:39.337611",
  "modified_by": "Administrator",
  "module": "i4wash",
  "name": "Event Registration",
