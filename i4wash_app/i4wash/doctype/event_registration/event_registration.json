@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:organization",
  "creation": "2025-07-10 22:54:23.142032",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,15 +12,14 @@
   "phone_number",
   "organization",
   "designation",
-  "presentation_ready",
+  "has_presentation",
   "presentation_file",
-  "booth_needed",
+  "wants_booth",
   "booth_count",
+  "has_attendees",
   "attendees",
-  "payment_reference",
-  "payment_method",
   "payment_status",
-  "amount_paid",
+  "payment_method",
   "amended_from"
  ],
  "fields": [
@@ -30,6 +30,7 @@
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Full Name"
   },
   {
@@ -45,7 +46,8 @@
   {
    "fieldname": "organization",
    "fieldtype": "Data",
-   "label": "Organization"
+   "label": "Organization",
+   "unique": 1
   },
   {
    "fieldname": "designation",
@@ -53,25 +55,14 @@
    "label": "Designation"
   },
   {
-   "default": "0",
-   "fieldname": "presentation_ready",
-   "fieldtype": "Check",
-   "label": "Presentation Ready"
-  },
-  {
    "fieldname": "presentation_file",
    "fieldtype": "Attach",
    "label": "Presentation File"
   },
   {
-   "default": "0",
-   "fieldname": "booth_needed",
-   "fieldtype": "Check",
-   "label": "Booth Needed"
-  },
-  {
    "fieldname": "booth_count",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Booth Count"
   },
   {
@@ -81,24 +72,38 @@
    "options": "Attendees"
   },
   {
-   "fieldname": "payment_reference",
-   "fieldtype": "Data",
-   "label": "Payment Reference"
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Pending\nPaid"
+  },
+  {
+   "default": "No",
+   "fieldname": "has_presentation",
+   "fieldtype": "Select",
+   "label": "Has Presentation",
+   "options": "Yes\nNo"
+  },
+  {
+   "default": "No",
+   "fieldname": "wants_booth",
+   "fieldtype": "Select",
+   "label": "Wants Booth",
+   "options": "Yes\nNo"
+  },
+  {
+   "default": "No",
+   "fieldname": "has_attendees",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Has Attendees",
+   "options": "Yes\nNo"
   },
   {
    "fieldname": "payment_method",
    "fieldtype": "Select",
-   "label": "Payment Method"
-  },
-  {
-   "fieldname": "payment_status",
-   "fieldtype": "Select",
-   "label": "Payment Status"
-  },
-  {
-   "fieldname": "amount_paid",
-   "fieldtype": "Currency",
-   "label": "Amount Paid"
+   "label": "Payment Method",
+   "options": "MPesa\nCard"
   },
   {
    "fieldname": "amended_from",
@@ -113,12 +118,12 @@
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2025-07-11 13:36:58.225683",
+ "modified": "2025-08-02 21:29:36.382190",
  "modified_by": "Administrator",
- "module": "i4wash",
+ "module": "I4Wash",
  "name": "Event Registration",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -130,8 +135,8 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],
