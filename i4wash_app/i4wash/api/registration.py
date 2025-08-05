@@ -1,5 +1,7 @@
 import frappe
 from frappe.utils.file_manager import save_file
+import base64
+import os
 
 @frappe.whitelist(allow_guest=True)
 def create_event_registration():
@@ -8,13 +10,15 @@ def create_event_registration():
     if not data:
         frappe.throw("No data received")
 
+    organization = data.get("organization") or "UnknownOrg"
+
     # Step 1: Create Event Registration Document
     reg = frappe.get_doc({
         "doctype": "Event Registration",
         "full_name": data.get("fullName"),
         "email": data.get("email"),
         "phone_number": data.get("phone"),
-        "organization": data.get("organization"),
+        "organization": organization,
         "designation": data.get("designation"),
         "has_presentation": "Yes" if data.get("presentationReady") == "Yes" else "No",
         "wants_booth": data.get("exhibitionBoothNeeded") or "No",
@@ -35,9 +39,18 @@ def create_event_registration():
 
     # Step 2: Attach Presentation File (optional)
     if data.get("presentationFile"):
-        content = frappe.utils.decode_base64(data["presentationFile"]["base64"])
+        # Get original extension
+        original_filename = data["presentationFile"]["filename"]
+        ext = os.path.splitext(original_filename)[1]
+
+        # Create new file name
+        clean_org = frappe.scrub(organization)  # safe slug for filename
+        new_filename = f"{clean_org}-Malindi_2025{ext}"
+
+        # Save file
+        content = base64.b64decode(data["presentationFile"]["base64"])
         save_file(
-            fname=data["presentationFile"]["filename"],
+            fname=new_filename,
             content=content,
             dt="Event Registration",
             dn=reg.name,
