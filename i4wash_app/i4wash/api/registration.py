@@ -1,5 +1,6 @@
 import frappe
 from frappe.utils.file_manager import save_file
+import base64
 
 @frappe.whitelist(allow_guest=True)
 def create_event_registration():
@@ -25,7 +26,7 @@ def create_event_registration():
                 "full_name": att.get("fullName"),
                 "email": att.get("email"),
                 "attendee_phone_number": att.get("attendeePhone"),
-                "organization": att.get("organization"),
+                "attendee_organization": att.get("attendeeOrganization"),
             }
             for att in data.get("attendees", [])
         ]
@@ -35,9 +36,23 @@ def create_event_registration():
 
     # Step 2: Attach Presentation File (optional)
     if data.get("presentationFile"):
-        content = frappe.utils.decode_base64(data["presentationFile"]["base64"])
+        # Extract file extension
+        original_filename = data["presentationFile"]["filename"]
+        ext = original_filename.split('.')[-1].lower()
+
+        # Validate extension
+        allowed_extensions = ["pdf", "ppt", "pptx"]
+        if ext not in allowed_extensions:
+            frappe.throw("Only PDF, PPT, and PPTX files are allowed for presentation uploads.")
+
+        # Format custom filename
+        org_name = (reg.organization or "UnknownOrg").strip().replace(" ", "_")
+        custom_filename = f"{org_name}-Malindi_2025.{ext}"
+
+        # Decode and save file
+        content = base64.b64decode(data["presentationFile"]["base64"])
         save_file(
-            fname=data["presentationFile"]["filename"],
+            fname=custom_filename,
             content=content,
             dt="Event Registration",
             dn=reg.name,

@@ -10,7 +10,7 @@
   "full_name",
   "email",
   "attendee_phone_number",
-  "organization"
+  "attendee_organization"
  ],
  "fields": [
   {
@@ -39,7 +39,7 @@
    "label": "Phone Number"
   },
   {
-   "fieldname": "organization",
+   "fieldname": "attendee_organization",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_preview": 1,
@@ -50,7 +50,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-07 14:12:56.621879",
+ "modified": "2025-08-07 15:42:16.388931",
  "modified_by": "Administrator",
  "module": "I4Wash",
  "name": "Attendees",
