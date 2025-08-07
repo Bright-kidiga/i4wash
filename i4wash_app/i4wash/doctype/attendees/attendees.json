@@ -9,34 +9,48 @@
   "section_break_wyns",
   "full_name",
   "email",
-  "phone_number"
+  "attendee_phone_number",
+  "organization"
  ],
  "fields": [
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
    "label": "Full Name"
   },
   {
    "fieldname": "email",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
    "label": "Email"
-  },
-  {
-   "fieldname": "phone_number",
-   "fieldtype": "Data",
-   "label": "Phone Number"
   },
   {
    "fieldname": "section_break_wyns",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attendee_phone_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Organization"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-07 13:14:57.680154",
+ "modified": "2025-08-07 14:12:56.621879",
  "modified_by": "Administrator",
  "module": "I4Wash",
  "name": "Attendees",
