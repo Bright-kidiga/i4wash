@@ -8,15 +8,15 @@
   "section_break_dtwo",
   "payer_name",
   "phone_number",
-  "email",
   "amount",
   "payment_method",
-  "status",
+  "payment_status",
   "transaction_id",
   "mpesa_reference",
   "card_last_4_digits",
   "bank_name",
-  "linked_registration",
+  "link_registration",
+  "payment_receipt",
   "amended_from"
  ],
  "fields": [
@@ -33,13 +33,8 @@
   {
    "depends_on": "doc.payment_method==\"Mpesa\" || doc.payment_method==\"KopoKopo\";",
    "fieldname": "phone_number",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "label": "Phone Number "
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email"
   },
   {
    "fieldname": "amount",
@@ -49,22 +44,19 @@
   {
    "fieldname": "payment_method",
    "fieldtype": "Select",
-   "label": "Payment Method"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status"
+   "label": "Payment Method",
+   "options": "MPesa\nCard"
   },
   {
    "fieldname": "transaction_id",
    "fieldtype": "Data",
-   "label": "Transaction ID\t"
+   "label": "Transaction ID\t",
+   "unique": 1
   },
   {
    "fieldname": "mpesa_reference",
    "fieldtype": "Data",
-   "label": "Mpesa Reference"
+   "label": "MPesa Reference"
   },
   {
    "depends_on": "doc.payment_method==\"Credit Card\" || doc.payment_method==\"Debit Card\";\n",
@@ -79,10 +71,21 @@
    "label": "Bank Name"
   },
   {
-   "fieldname": "linked_registration",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Pending\nPaid"
+  },
+  {
+   "fieldname": "link_registration",
    "fieldtype": "Link",
-   "label": "Linked Registration",
+   "label": "Link Registration",
    "options": "Event Registration"
+  },
+  {
+   "fieldname": "payment_receipt",
+   "fieldtype": "Attach",
+   "label": "Payment Receipt"
   },
   {
    "fieldname": "amended_from",
@@ -99,9 +102,9 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-11 13:37:08.524513",
+ "modified": "2025-08-01 14:10:01.067175",
  "modified_by": "Administrator",
- "module": "i4wash",
+ "module": "I4Wash",
  "name": "Payment Log",
  "owner": "Administrator",
  "permissions": [

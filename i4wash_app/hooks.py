@@ -245,3 +245,12 @@ fixtures = ["Custom Field", "Property Setter", "Print Format", "Server Script", 
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+override_whitelisted_methods = {}
+
+app_include_js = []
+
+override_whitelisted_methods = {}
+
+# ✅ Custom route to allow /api/method/i4wash.api.mpesa.initiate_stk_push
+# Not needed if using @frappe.whitelist but just to be safe:
