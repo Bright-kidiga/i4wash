@@ -1,71 +1,58 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-07-10 23:19:15.031277",
+ "creation": "2025-08-07 13:13:44.280093",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_break_09zy",
+  "section_break_wyns",
   "full_name",
   "email",
-  "phone_number",
-  "amended_from"
+  "attendee_phone_number",
+  "attendee_organization"
  ],
  "fields": [
   {
-   "fieldname": "section_break_09zy",
-   "fieldtype": "Section Break",
-   "label": "Attendees"
-  },
-  {
    "fieldname": "full_name",
    "fieldtype": "Data",
-   "label": "Full Name ",
-   "no_copy": 1,
-   "options": "Attendees",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Full Name"
   },
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "label": "Email",
-   "no_copy": 1,
-   "options": "Attendees",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Email"
   },
   {
-   "fieldname": "phone_number",
-   "fieldtype": "Phone",
-   "label": "Phone number",
-   "no_copy": 1,
-   "options": "Attendees",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "fieldname": "section_break_wyns",
+   "fieldtype": "Section Break"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Attendees",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "fieldname": "attendee_phone_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "attendee_organization",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Organization"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-15 20:52:35.840057",
+ "modified": "2025-08-07 15:42:16.388931",
  "modified_by": "Administrator",
- "module": "i4wash",
+ "module": "I4Wash",
  "name": "Attendees",
  "owner": "Administrator",
  "permissions": [],

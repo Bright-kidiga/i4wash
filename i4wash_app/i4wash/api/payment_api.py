@@ -63,7 +63,7 @@ def initiate_stk_push(phone, amount, account_reference, transaction_desc):
         "PartyA": phone,
         "PartyB": business_short_code,
         "PhoneNumber": phone,
-        "CallBackURL": "http://www.i4wash.com:8000/api/method/i4wash_app.i4wash.api.mpesa.initiate_stk_push",
+        "CallBackURL": "http://www.i4wash.com:8000/api/method/i4wash_app.i4wash.api.payment_api.initiate_stk_push",
         "AccountReference": account_reference,
         "TransactionDesc": transaction_desc
     }
