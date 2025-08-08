@@ -1,30 +1,53 @@
 import frappe
 import stripe
+from frappe import _
 
 @frappe.whitelist(allow_guest=True)
-def create_payment_intent():
-    import json
-    data = json.loads(frappe.request.data)
-    payment_method_id = data.get("payment_method_id")
-    amount = int(data.get("amount", 0))
-
-    if not payment_method_id or not amount:
-        frappe.throw("Missing required data.")
-
-    stripe.api_key = frappe.conf.get("stripe_secret_key")
+def card_payment(name_on_card, card_number, exp_month, exp_year, cvc, amount, currency):
+    # Validate input
+    if currency not in ["USD", "DKK"]:
+        return {"success": False, "message": "Unsupported currency. Use KES or EUR."}
 
     try:
-        intent = stripe.PaymentIntent.create(
-            amount=amount,
-            currency="kes",
-            payment_method=payment_method_id,
-            confirmation_method="manual",
-            confirm=True,
+        # Get correct Stripe secret key
+        stripe_key = frappe.conf.get("stripe_keys", {}).get(currency, {}).get("secret_key")
+        if not stripe_key:
+            return {"success": False, "message": f"Stripe key for {currency} not configured"}
+
+        stripe.api_key = stripe_key
+
+        # Step 1: Create payment method
+        payment_method = stripe.PaymentMethod.create(
+            type="card",
+            card={
+                "number": card_number,
+                "exp_month": int(exp_month),
+                "exp_year": int(exp_year),
+                "cvc": cvc
+            },
+            billing_details={
+                "name": name_on_card
+            }
         )
+
+        # Step 2: Create a PaymentIntent
+        payment_intent = stripe.PaymentIntent.create(
+            amount=int(amount) * 100,  # Stripe uses cents
+            currency=currency.lower(),
+            payment_method=payment_method.id,
+            confirm=True
+        )
+
         return {
-            "client_secret": intent.client_secret,
-            "status": intent.status,
+            "success": True,
+            "message": "Payment successful",
+            "payment_intent_id": payment_intent.id,
+            "currency": currency,
+            "amount": amount
         }
-    except stripe.error.StripeError as e:
-        frappe.log_error(str(e), "Stripe Error")
-        frappe.throw(str(e))
+
+    except stripe.error.CardError as e:
+        return {"success": False, "message": f"Card error: {str(e)}"}
+    except Exception as e:
+        frappe.log_error(f"Stripe card error: {str(e)}", "Card Payment Error")
+        return {"success": False, "message": f"Payment failed: {str(e)}"}

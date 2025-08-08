@@ -6,3 +6,26 @@
 
 // 	},
 // });
+frappe.ui.form.on('Event Registration', {
+    refresh(frm) {
+        toggle_fields(frm);
+    },
+
+    has_presentation(frm) {
+        toggle_fields(frm);
+    },
+
+    wants_booth(frm) {
+        toggle_fields(frm);
+    },
+
+    has_attendees(frm) {
+        toggle_fields(frm);
+    }
+});
+
+function toggle_fields(frm) {
+    frm.toggle_display('presentation_file', frm.doc.has_presentation === 'Yes');
+    frm.toggle_display('booth_count', frm.doc.wants_booth === 'Yes');
+    frm.toggle_display('attendees', frm.doc.has_attendees === 'Yes');
+}
