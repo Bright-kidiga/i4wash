@@ -16,7 +16,8 @@
   "wants_booth",
   "booth_count",
   "has_attendees",
-  "attendees"
+  "attendees",
+  "payment_status"
  ],
  "fields": [
   {
@@ -27,11 +28,13 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Email"
   },
   {
    "fieldname": "phone_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Phone Number"
   },
   {
@@ -46,10 +49,10 @@
    "label": "Designation"
   },
   {
+   "default": "0",
    "fieldname": "has_presentation",
-   "fieldtype": "Select",
-   "label": "Has Presentation",
-   "options": "Yes\nNo"
+   "fieldtype": "Check",
+   "label": "Has Presentation"
   },
   {
    "fieldname": "presentation_file",
@@ -57,10 +60,10 @@
    "label": "Presentation File"
   },
   {
+   "default": "0",
    "fieldname": "wants_booth",
-   "fieldtype": "Select",
-   "label": "Wants Booth",
-   "options": "Yes\nNo"
+   "fieldtype": "Check",
+   "label": "Wants Booth"
   },
   {
    "fieldname": "booth_count",
@@ -68,22 +71,30 @@
    "label": "Booth Count"
   },
   {
+   "default": "0",
    "fieldname": "has_attendees",
-   "fieldtype": "Select",
-   "label": "Has Attendees",
-   "options": "Yes\nNo"
+   "fieldtype": "Check",
+   "label": "Has Attendees"
   },
   {
    "fieldname": "attendees",
    "fieldtype": "Table",
    "label": "Attendees",
    "options": "Attendees"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Status",
+   "options": "Pending\nPaid\nPartial\nCancelled"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-07 13:21:59.577151",
+ "modified": "2025-08-12 08:25:12.942404",
  "modified_by": "Administrator",
  "module": "I4Wash",
  "name": "Event Registration",
