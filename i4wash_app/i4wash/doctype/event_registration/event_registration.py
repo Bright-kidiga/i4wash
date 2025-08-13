@@ -23,10 +23,10 @@ def after_insert(doc, method):
             <li><b>Phone Number:</b> {doc.phone_number or 'N/A'}</li>
             <li><b>Organization:</b> {doc.organization or 'N/A'}</li>
             <li><b>Designation:</b> {doc.designation or 'N/A'}</li>
-            <li><b>Presentation Ready:</b> {"Yes" if doc.has_presentation else "No"}</li>
-            <li><b>Wants Booth:</b> {"Yes" if doc.wants_booth else "No"}</li>
+            <li><b>Presentation Ready:</b> {'Yes' if doc.has_presentation else 'No'}</li>
+            <li><b>Wants Booth:</b> {'Yes' if doc.wants_booth else 'No'}</li>
             <li><b>Booth Count:</b> {doc.booth_count or 0}</li>
-			<li><b>Attendees: {"Yes"doc.has_attendees}</b></li>
+			<li><b>Attendees:</b> {'Yes' if doc.has_attendees else 'No'}</li>
         </ul>
         <p>We look forward to your participation!</p>
 		<p>Please find attached a document containing the full detailed summary and payment details<p>
