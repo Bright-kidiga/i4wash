@@ -60,7 +60,8 @@ def contact_sponsor(fullName, email, organization, role, message):
         recipients=["hekimalibrary@gmail.com"],
         subject=subject,
         message=body,
-        reply_to=email
+        reply_to=email,
+        now=True
     )
 
     # Step 2: Save to Doctype

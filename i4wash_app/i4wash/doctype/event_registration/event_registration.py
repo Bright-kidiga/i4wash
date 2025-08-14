@@ -101,18 +101,7 @@ def after_insert(doc, method):
         <div class="logo">
             <img src="data:image/png;base64,{logo_base64}" width="150" />
         </div>
-        <h2>Registration Summary - Malindi 2025</h2>
-        <p><b>Full Name:</b> {doc.full_name}</p>
-        <p><b>Email:</b> {doc.email}</p>
-        <p><b>Phone Number:</b> {doc.phone_number or 'N/A'}</p>
-        <p><b>Organization:</b> {doc.organization or 'N/A'}</p>
-        <p><b>Designation:</b> {doc.designation or 'N/A'}</p>
-        <p><b>Presentation Ready:</b> {'Yes' if doc.has_presentation else 'No'}</p>
-        <p><b>Wants Booth:</b> {'Yes' if doc.wants_booth else 'No'}</p>
-        <p><b>Booth Count:</b> {doc.booth_count or 0}</p>
-        <p><b>Attendees:</b></p>
-        {attendees_html}
-        <hr>
+        
         <h3>Due Payment</h3>
         <table border="1" cellpadding="5" cellspacing="0">
             <tr>
@@ -148,7 +137,8 @@ def after_insert(doc, method):
             <tr id="bank-payment">
                 <td>
                     <h4>Bank Payment Instructions:</h4>
-                    <p>Payment can be made in either cash, cash transfer or even cheque to either of accounts below:</p>
+                    <p>Payment can be made in either</p>
+                    <p>cash, cash transfer or even cheque to either of accounts below:</p>
                 </td>
                 <td></td>
             </tr>
@@ -180,9 +170,8 @@ def after_insert(doc, method):
        <div style="text-align: justify;">
             <p>
                 Yours faithfully,
-                <br> John Doe
                 <br>Co – organizing team,
-                <br>Innovate for WASH Forum – Kisumu
+                <br>Innovate for WASH Forum – Malindi
                 <br>+254723341220
             </p>
             <p>
@@ -205,7 +194,19 @@ def after_insert(doc, method):
     message = f"""
         <p>Dear {doc.full_name},</p>
         <p>Thank you for registering for the Malindi 2025 Event.</p>
-        <p>Your registration summary is attached as a PDF, along with payment details.</p>
+        <hr>
+        <h2>Registration Summary - Malindi 2025</h2>
+        <p><b>Full Name:</b> {doc.full_name}</p>
+        <p><b>Email:</b> {doc.email}</p>
+        <p><b>Phone Number:</b> {doc.phone_number or 'N/A'}</p>
+        <p><b>Organization:</b> {doc.organization or 'N/A'}</p>
+        <p><b>Designation:</b> {doc.designation or 'N/A'}</p>
+        <p><b>Presentation Ready:</b> {'Yes' if doc.has_presentation else 'No'}</p>
+        <p><b>Wants Booth:</b> {'Yes' if doc.wants_booth else 'No'}</p>
+        <p><b>Booth Count:</b> {doc.booth_count or 0}</p>
+        <p><b>Attendees:</b></p>
+        {attendees_html}
+        <p>Please Find attached the payment details and payment summary </p>
         <p>Best regards,<br>Malindi 2025 Team</p>
     """
 
