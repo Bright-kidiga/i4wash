@@ -102,7 +102,11 @@ def after_insert(doc, method):
             <img src="data:image/png;base64,{logo_base64}" width="150" />
         </div>
         
-        <h3>Due Payment</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0;">Due Payment</h3>
+            <span style="font-size: 12pt; color: #555;">{frappe.utils.formatdate(doc.creation, "dd MMM yyyy")}</span>
+        </div>
+        
         <table border="1" cellpadding="5" cellspacing="0">
             <tr>
                 <th>Description</th>
