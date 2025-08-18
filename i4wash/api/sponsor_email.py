@@ -14,20 +14,22 @@ def contact_sponsor(fullName, email, organization, role, message):
 
     # Step 1: Send the email
     subject = f"{safe_role.capitalize()} Inquiry: {safe_organization or safe_name}"
+    safe_message_html = message.replace("\n", "<br>")
     body = f"""
         <p><strong>Name:</strong> {safe_name}</p>
         <p><strong>Email:</strong> {email}</p>
         <p><strong>Organization:</strong> {safe_organization or "Not provided"}</p>
         <p><strong>Role:</strong> {safe_role.capitalize()}</p>
         <p><strong>Message:</strong></p>
-        <p>{message.replace('\n', '<br>')}</p>
+        <p>{safe_message_html}</p>
     """
 
     frappe.sendmail(
         recipients=["hekimalibrary@gmail.com"],
         subject=subject,
         message=body,
-        reply_to=email
+        reply_to=email,
+        now=True
     )
 
     # Step 2: Save to Doctype

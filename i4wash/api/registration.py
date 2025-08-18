@@ -17,10 +17,10 @@ def create_event_registration():
         "phone_number": data.get("phone"),
         "organization": data.get("organization"),
         "designation": data.get("designation"),
-        "has_presentation": "Yes" if data.get("presentationReady") == "Yes" else "No",
-        "wants_booth": data.get("exhibitionBoothNeeded") or "No",
+        "has_presentation": bool(data.get("presentationReady")),
+        "wants_booth": bool(data.get("exhibitionBoothNeeded")),
         "booth_count": data.get("exhibitionBoothCount") or 0,
-        "has_attendees": "Yes" if data.get("attendees") else "No",
+        "has_attendees": bool(data.get("attendees") and len(data.get("attendees")) > 0),
         "attendees": [
             {
                 "full_name": att.get("fullName"),
