@@ -248,3 +248,18 @@ webhooks = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+override_whitelisted_methods = {}
+
+app_include_js = []
+
+override_whitelisted_methods = {}
+
+doc_events = {
+    "Event Registration": {
+        "after_insert": "i4wash_app.i4wash.doctype.event_registration.event_registration.after_insert"
+    }
+}
+
+# ✅ Custom route to allow /api/method/i4wash.api.mpesa.initiate_stk_push
+# Not needed if using @frappe.whitelist but just to be safe:

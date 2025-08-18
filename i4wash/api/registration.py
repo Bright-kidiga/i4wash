@@ -1,7 +1,6 @@
 import frappe
 from frappe.utils.file_manager import save_file
 import base64
-import os
 
 @frappe.whitelist(allow_guest=True)
 def create_event_registration():
@@ -10,26 +9,24 @@ def create_event_registration():
     if not data:
         frappe.throw("No data received")
 
-    organization = data.get("organization") or "UnknownOrg"
-
     # Step 1: Create Event Registration Document
     reg = frappe.get_doc({
         "doctype": "Event Registration",
         "full_name": data.get("fullName"),
         "email": data.get("email"),
         "phone_number": data.get("phone"),
-        "organization": organization,
+        "organization": data.get("organization"),
         "designation": data.get("designation"),
-        "has_presentation": "Yes" if data.get("presentationReady") == "Yes" else "No",
-        "wants_booth": data.get("exhibitionBoothNeeded") or "No",
+        "has_presentation": bool(data.get("presentationReady")),
+        "wants_booth": bool(data.get("exhibitionBoothNeeded")),
         "booth_count": data.get("exhibitionBoothCount") or 0,
-        "has_attendees": "Yes" if data.get("attendees") else "No",
+        "has_attendees": bool(data.get("attendees") and len(data.get("attendees")) > 0),
         "attendees": [
             {
                 "full_name": att.get("fullName"),
                 "email": att.get("email"),
                 "attendee_phone_number": att.get("attendeePhone"),
-                "organization": att.get("organization"),
+                "attendee_organization": att.get("attendeeOrganization"),
             }
             for att in data.get("attendees", [])
         ]
@@ -39,18 +36,23 @@ def create_event_registration():
 
     # Step 2: Attach Presentation File (optional)
     if data.get("presentationFile"):
-        # Get original extension
+        # Extract file extension
         original_filename = data["presentationFile"]["filename"]
-        ext = os.path.splitext(original_filename)[1]
+        ext = original_filename.split('.')[-1].lower()
 
-        # Create new file name
-        clean_org = frappe.scrub(organization)  # safe slug for filename
-        new_filename = f"{clean_org}-Malindi_2025{ext}"
+        # Validate extension
+        allowed_extensions = ["pdf", "ppt", "pptx"]
+        if ext not in allowed_extensions:
+            frappe.throw("Only PDF, PPT, and PPTX files are allowed for presentation uploads.")
 
-        # Save file
+        # Format custom filename
+        org_name = (reg.organization or "UnknownOrg").strip().replace(" ", "_")
+        custom_filename = f"{org_name}-Malindi_2025.{ext}"
+
+        # Decode and save file
         content = base64.b64decode(data["presentationFile"]["base64"])
         save_file(
-            fname=new_filename,
+            fname=custom_filename,
             content=content,
             dt="Event Registration",
             dn=reg.name,
