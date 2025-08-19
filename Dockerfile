@@ -25,11 +25,8 @@ ENV ADMIN_PASSWORD=admin123
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git curl wget vim libffi-dev libssl-dev python3-dev python3-setuptools \
     redis-server redis-tools supervisor unzip gnupg cron \
-    && wget https://dev.mysql.com/get/mysql-apt-config_0.8.25-1_all.deb \
-    && DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.25-1_all.deb \
-    && apt-get update && apt-get install -y mysql-client \
+    default-mysql-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 
 
 # Install Node.js 20.x
