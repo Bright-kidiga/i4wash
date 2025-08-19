@@ -10,16 +10,12 @@ cd $FRAPPE_HOME/frappe-bench
 #: "${ADMIN_PASSWORD:?Need to set ADMIN_PASSWORD}"
 
 # Start MariaDB in background if not already running
-if ! mysqladmin ping -uroot -p"$DB_ROOT_PASSWORD" --silent; then
-    echo "Starting MariaDB..."
-    mysqld_safe --skip-networking=0 --skip-bind-address &
-
-    # Wait for MariaDB to be ready
-    until mysqladmin ping -uroot -p"$DB_ROOT_PASSWORD" --silent; do
-        echo "Waiting for MariaDB to start..."
-        sleep 2
-    done
-fi
+# Wait for MariaDB to start using Python + PyMySQL
+echo "Waiting for MariaDB to start..."
+until python3 -c "import pymysql; pymysql.connect(host='127.0.0.1', user='root', password='$DB_ROOT_PASSWORD')" >/dev/null 2>&1; do
+    echo "MariaDB not ready yet... sleeping 2 seconds"
+    sleep 2
+done
 
 # Check if site already exists
 if [ ! -d "sites/$SITE_NAME" ]; then
