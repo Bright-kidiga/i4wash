@@ -8,12 +8,6 @@ ENV LC_ALL=C.UTF-8
 ENV PIP_NO_CACHE_DIR=1
 ENV FRAPPE_USER=frappe
 ENV FRAPPE_HOME=/home/$FRAPPE_USER
-#ENV SITE_NAME=
-ENV DB_HOST=
-#ENV DB_NAME=
-#ENV DB_USER=
-#ENV DB_PASSWORD=
-#ENV ADMIN_PASSWORD=
 ENV DB_SSLMODE=disable
 ENV DB_ALLOW_PUBLIC_KEY_RETRIEVAL=1
 
@@ -24,10 +18,9 @@ ENV ADMIN_PASSWORD=admin123
 # Install system dependencies (as root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git curl wget vim libffi-dev libssl-dev python3-dev python3-setuptools \
-    redis-server redis-tools supervisor unzip gnupg cron \
+    redis-server redis-tools supervisor unzip gnupg cron lsb-release \
     default-mysql-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 
 # Install Node.js 20.x
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
