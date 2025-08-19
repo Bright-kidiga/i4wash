@@ -16,9 +16,10 @@ if [ -z "$TABLE_EXISTS" ]; then
     bench new-site $SITE_NAME \
         --db-host $DB_HOST \
         --db-port $DB_PORT \
-        --db-user $DB_USER \
+        --db-root-username $DB_USER \
         --db-password $DB_PASSWORD \
-        --admin-password $ADMIN_PASSWORD
+        --admin-password $ADMIN_PASSWORD \
+        --no-setup-db
 
 else
     echo "Site already exists. Skipping creation."
