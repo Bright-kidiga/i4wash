@@ -16,7 +16,7 @@ if [ -z "$TABLE_EXISTS" ]; then
     bench new-site $SITE_NAME \
         --db-host $DB_HOST \
         --db-port $DB_PORT \
-        --db-root-username $DB_USER \
+        --db-username $DB_USER \
         --db-password $DB_PASSWORD \
         --admin-password $ADMIN_PASSWORD
 
