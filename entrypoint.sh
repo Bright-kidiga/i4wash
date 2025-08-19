@@ -18,8 +18,7 @@ if [ -z "$TABLE_EXISTS" ]; then
         --db-port $DB_PORT \
         --db-root-username $DB_USER \
         --db-password $DB_PASSWORD \
-        --admin-password $ADMIN_PASSWORD \
-        --ssl-mode=DISABLED
+        --admin-password $ADMIN_PASSWORD
 
 else
     echo "Site already exists. Skipping creation."
