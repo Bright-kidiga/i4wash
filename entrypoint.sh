@@ -15,7 +15,6 @@ if [ ! -d "sites/$SITE_NAME" ]; then
 
     # Create site non-interactively
     bench new-site "$SITE_NAME" \
-        --db-host "$DB_HOST" \
         --db-root-username root \
         --db-root-password "$DB_ROOT_PASSWORD" \
         --admin-password "$ADMIN_PASSWORD" \
