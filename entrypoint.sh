@@ -19,7 +19,7 @@ if [ ! -d "sites/$SITE_NAME" ]; then
         --db-root-username root \
         --db-root-password "$DB_ROOT_PASSWORD" \
         --admin-password "$ADMIN_PASSWORD" \
-        --non-interactive
+
 else
     echo "Site $SITE_NAME already exists. Skipping creation."
 fi
