@@ -18,9 +18,10 @@ ENV ADMIN_PASSWORD=admin123
 # Install system dependencies (as root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git curl wget vim libffi-dev libssl-dev python3-dev python3-setuptools \
-    redis-server redis-tools supervisor unzip gnupg cron lsb-release \
+    redis-server redis-tools supervisor unzip gnupg cron \
     default-mysql-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Install Node.js 20.x
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \

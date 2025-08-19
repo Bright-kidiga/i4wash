@@ -8,7 +8,7 @@ cd $FRAPPE_HOME/frappe-bench
 : "${DB_ROOT_PASSWORD:?Need to set DB_ROOT_PASSWORD}"
 : "${ADMIN_PASSWORD:?Need to set ADMIN_PASSWORD}"
 
-TABLE_EXISTS=$(mysql -u"$DB_USER" -p"$DB_PASSWORD" -h"$DB_HOST" -P "$DB_PORT" --ssl-mode=DISABLED -D"$DB_NAME" -e "SHOW TABLES LIKE 'tabSingles';" -s --skip-column-names)
+TABLE_EXISTS=$(mysql -u"$DB_USER" -p"$DB_PASSWORD" -h"$DB_HOST" -P "$DB_PORT" -D"$DB_NAME" -e "SHOW TABLES LIKE 'tabSingles';" -s --skip-column-names)
 
 # Check if site already exists
 if [ -z "$TABLE_EXISTS" ]; then
