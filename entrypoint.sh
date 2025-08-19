@@ -4,10 +4,6 @@ set -e
 cd $FRAPPE_HOME/frappe-bench
 
 # Ensure required environment variables are set
-: "${SITE_NAME:?Need to set SITE_NAME}"
-: "${DB_HOST:?Need to set DB_HOST}"
-: "${DB_ROOT_PASSWORD:?Need to set DB_ROOT_PASSWORD}"
-: "${ADMIN_PASSWORD:?Need to set ADMIN_PASSWORD}"
 
 # Check if site already exists
 if [ ! -d "sites/$SITE_NAME" ]; then
