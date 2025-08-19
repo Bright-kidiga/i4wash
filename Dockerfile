@@ -2,18 +2,22 @@
 FROM python:3.11-slim
 
 # Environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-ENV LANG=C.UTF-8
-ENV LC_ALL=C.UTF-8
-ENV PIP_NO_CACHE_DIR=1
-ENV FRAPPE_USER=frappe
-ENV FRAPPE_HOME=/home/$FRAPPE_USER
-ENV SITE_NAME=
-ENV DB_HOST=
-ENV DB_NAME=
-ENV DB_USER=
-ENV DB_PASSWORD=
-ENV ADMIN_PASSWORD=
+#ENV DEBIAN_FRONTEND=noninteractive
+#ENV LANG=C.UTF-8
+#ENV LC_ALL=C.UTF-8
+#ENV PIP_NO_CACHE_DIR=1
+#ENV FRAPPE_USER=frappe
+#ENV FRAPPE_HOME=/home/$FRAPPE_USER
+#ENV SITE_NAME=
+#ENV DB_HOST=
+#ENV DB_NAME=
+#ENV DB_USER=
+#ENV DB_PASSWORD=
+#ENV ADMIN_PASSWORD=
+
+ENV SITE_NAME=web.apps.i4wash.com
+ENV DB_ROOT_PASSWORD=example_root_password
+ENV ADMIN_PASSWORD=admin123
 
 # Install system dependencies (as root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
