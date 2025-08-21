@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:organization",
+ "autoname": "INV-.YYYY.-.#####",
  "creation": "2025-08-07 13:05:46.341263",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "invoice_number",
   "full_name",
   "email",
   "phone_number",
@@ -17,9 +18,17 @@
   "booth_count",
   "has_attendees",
   "attendees",
-  "payment_status"
+  "payment_status",
+  "total_amount_kes",
+  "total_amount_eur"
  ],
  "fields": [
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "label": "Invoice Number",
+   "read_only": 1
+  },
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
@@ -28,8 +37,8 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Email"
+   "label": "Email",
+   "unique": 1
   },
   {
    "fieldname": "phone_number",
@@ -40,8 +49,8 @@
   {
    "fieldname": "organization",
    "fieldtype": "Data",
-   "label": "Organization",
-   "unique": 1
+   "in_list_view": 1,
+   "label": "Organization"
   },
   {
    "fieldname": "designation",
@@ -89,16 +98,28 @@
    "in_list_view": 1,
    "label": "Payment Status",
    "options": "Pending\nPaid\nPartial\nCancelled"
+  },
+  {
+   "fieldname": "total_amount_kes",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount (KES)"
+  },
+  {
+   "fieldname": "total_amount_eur",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount (EUR)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-12 08:25:12.942404",
+ "modified": "2025-08-21 15:32:00.360956",
  "modified_by": "Administrator",
  "module": "I4Wash",
  "name": "Event Registration",
- "naming_rule": "By fieldname",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

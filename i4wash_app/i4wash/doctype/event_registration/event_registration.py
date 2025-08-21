@@ -16,7 +16,41 @@ def kes(amount):
     return f"KES {amount:,.2f}"
 
 
+def eur(amount):
+    return f"EUR {amount:,.2f}"
+
+def before_insert(doc, method):
+    # Assign autonamed invoice number to custom field
+    doc.invoice_number = doc.name  
+
+    
+def before_save(doc, method):
+    # Fees in KES
+    applicant_fee_kes = 35000
+    booth_fee_kes = 50000
+    attendee_fee_kes = 35000
+
+    # Fees in EUR
+    applicant_fee_eur = 300
+    booth_fee_eur = 460
+    attendee_fee_eur = 300
+
+    # Totals in KES
+    total_booth_kes = (doc.booth_count or 0) * booth_fee_kes
+    total_attendee_kes = len(doc.attendees or []) * attendee_fee_kes
+    total_kes = applicant_fee_kes + total_booth_kes + total_attendee_kes
+
+    # Totals in EUR
+    total_booth_eur = (doc.booth_count or 0) * booth_fee_eur
+    total_attendee_eur = len(doc.attendees or []) * attendee_fee_eur
+    total_eur = applicant_fee_eur + total_booth_eur + total_attendee_eur
+
+    # Set values on document
+    doc.total_amount_kes = total_kes
+    doc.total_amount_eur = total_eur
+
 def after_insert(doc, method):
+    doc.invoice_number = doc.name
     """Send confirmation email after registration is created with attached PDF summary."""
     if not doc.email:
         return
@@ -27,17 +61,45 @@ def after_insert(doc, method):
         logo_base64 = base64.b64encode(logo_file.read()).decode()
 
     # ----------------------------
-    # Payment Calculation
+    # KES Payment Calculation
     # ----------------------------
-    applicant_fee = 35000
-    booth_fee = 50000
-    attendee_fee = 35000
+    applicant_fee_kes = 35000
+    booth_fee_kes = 50000
+    attendee_fee_kes = 35000
 
-    total_amount = (
-        applicant_fee +
-        (doc.booth_count or 0) * booth_fee +
-        len(doc.attendees or []) * attendee_fee
+    total_booth_kes = (
+        (doc.booth_count or 0) * booth_fee_kes
     )
+    total_attendee_kes = (
+        len(doc.attendees or []) * attendee_fee_kes
+    )
+    total_kes = (
+        applicant_fee_kes +
+        total_booth_kes +
+        total_attendee_kes
+    )
+
+    #---------------------------------
+    # EUR equivalents (fixed values)
+    #----------------------------------
+    applicant_fee_eur = 300
+    booth_fee_eur = 460
+    attendee_fee_eur = 300
+
+    total_booth_eur = (
+        (doc.booth_count or 0) * booth_fee_eur
+    )
+    total_attendee_eur = (
+        len(doc.attendees or []) * attendee_fee_eur
+    )
+    total_eur = (
+        applicant_fee_eur +
+        total_booth_eur +
+        total_attendee_eur
+    )
+
+    frappe.db.set_value("Event Registration", doc.name, "total_amount", total_kes)
+    frappe.db.set_value("Event Registration", doc.name, "total_amount_eur", total_eur)
 
     # ----------------------------
     # Build Attendees List for PDF
@@ -56,134 +118,179 @@ def after_insert(doc, method):
     # ----------------------------
     pdf_html = f"""
     <html>
-    <head>
-        <style>
+        <head>
+            <style>
                 body {{
-                    font-family: Arial, sans-serif;
-                    font-size: 12pt;
-                    color: #333;
-                    margin: 40px;
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                color: #333;
                 }}
-                h1, h2, h3 {{
-                    color: #003366;
+                h1 {{
+                text-align: center;
+                margin-bottom: 20px;
                 }}
-                .logo {{
-                    text-align: center;
-                    margin-bottom: 20px;
+                .flex-header {{
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                }}
+                .bold {{        
+                font-weight: bold;
                 }}
                 table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 15px;
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
                 }}
-                th, td {{
-                    border: 1px solid #ccc;
-                    padding: 8px;
-                    text-align: left;
+                table th, table td {{
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
                 }}
-                th {{
-                    background-color: #f0f0f0;
+                table th {{
+                background: #f4f4f4;
                 }}
-                .section-title {{
-                    color: #2e7d32;
-                    font-weight: bold;
-                    margin-top: 20px;
+                .totals {{
+                float: right;
+                width: 300px;
+                margin-top: 20px;
                 }}
-                #bank-payment {{
-                    background-color: rgb(203,201,159);
+                .totals td {{
+                padding: 8px;
                 }}
-                #bank-payment-instructions {{
-                    background-color: rgb(236,236,221);
+                .highlight {{
+                background: #eaeaea;
+                padding: 10px;
+                font-weight: bold;
                 }}
-        </style>
-    </head>
-    <body>
-        <div class="logo">
-            <img src="data:image/png;base64,{logo_base64}" width="150" />
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0;">Due Payment</h3>
-            <span style="font-size: 12pt; color: #555;">{frappe.utils.formatdate(doc.creation, "dd MMM yyyy")}</span>
-        </div>
-        
-        <table border="1" cellpadding="5" cellspacing="0">
-            <tr>
-                <th>Description</th>
-                <th>Amount (KES)</th>
-            </tr>
-            <tr>
-                <td>Applicant Fee</td>
-                <td>{kes(applicant_fee)}</td>
-            </tr>
-            <tr>
-                <td>Booth Fee ({doc.booth_count or 0} x {kes(booth_fee)})</td>
-                <td>{kes((doc.booth_count or 0) * booth_fee)}</td>
-            </tr>
-            <tr>
-                <td>Attendee Fee ({len(doc.attendees or [])} x {kes(attendee_fee)})</td>
-                <td>{kes(len(doc.attendees or []) * attendee_fee)}</td>
-            </tr>
-            <tr>
-                <th>Total</th>
-                <th>{kes(total_amount)}</th>
-            </tr>
-        </table>
-        <h3>Payment Details</h3>
-        <h4><u>Terms of Payment</u></h4>
-        <ul>
-            <li> Should be paid <b><u>within 7 days on the date on this invoice.</u></b></li>
-            <li>All transfer fees are to be paid by the client.</li>
-            <li>Regarding VAT, the supplied services are subject to reverse charge in the country of receipt.</li>
-            <li> When paying by bank transfer, please state your <b><u>organization name.</u></b></li>
-        </ul>
-        <table>
-            <tr id="bank-payment">
-                <td>
-                    <h4>Bank Payment Instructions:</h4>
-                    <p>Payment can be made in either</p>
-                    <p>cash, cash transfer or even cheque to either of accounts below:</p>
-                </td>
-                <td></td>
-            </tr>
-            <tr id="bank-payment-instructions">
-                <td>
-                    <p>
-                        <b><u>Payment in KES:</u></b><br>
-                        <b>Account Name:</b> Quercus Group Ltd.<br>
-                        <b>Account No:</b> 7494880018<br>
-                        <b>Bank:</b> NCBA<br>
-                        <b>Bank Address:</b> 30437-00100<br>
-                        <b>Branch code:</b> 07000<br>
-                        <b>SWIFT Code:</b> CBAFKENX<br>
-                    </p>
-                </td>
-                <td>
-                    <p>
-                        <b><u>Payment in Euros:</u></b><br>
-                        <b>Account Name:</b> Quercus Group Ltd.<br>
-                        <b>Account No:</b> 7494880023<br>
-                        <b>Bank:</b> NCBA<br>
-                        <b>Bank Address:</b> 30437-00100<br>
-                        <b>Branch code:</b> 07000<br>
-                        <b>SWIFT Code:</b> CBAFKENX<br>
-                    </p>
-                </td>
-            </tr>
-        </table>
-       <div style="text-align: justify;">
-            <p>
-                Yours faithfully,
-                <br>Co – organizing team,
-                <br>Innovate for WASH Forum – Malindi
-                <br>+254723341220
+                .footer {{
+                text-align: center;
+                font-size: 12px;
+                margin-top: 30px;
+                color: #666;
+                }}
+                .page-break {{
+                page-break-before: always; 
+                break-before: page;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1>INVOICE</h1>
+
+            <table style="width:100%; margin-bottom:20px; border:none;">
+                <tr style="border: none;">
+                    <td style="text-align:left; vertical-align:top; border: none;">
+                        <p><span class="bold">Quercus Group</span></p>
+                        <p>I4WASH Marketplace forum<br>
+                        5<sup>th</sup>– 8<sup>th</sup> November 2025,<br>
+                        Malindi<br>
+                        Kenya.</p>
+                    </td>
+                    <td style="text-align:right; vertical-align:top; border: none;">
+                        <img src="data:image/png;base64,{logo_base64}" alt="Logo" style="max-height:60px"><br>
+                        <p>Invoice no: {doc.invoice_number} <br>
+                        Invoice date: {frappe.utils.formatdate(doc.creation, "dd MMM yyyy")}<br>
+                        Our reference: Mariam Njoroge<br>
+                        Their reference: <span class="bold">{doc.full_name}, {doc.organization}</span></p>
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Amount (KES)</th>
+                    <th>Amount (EUR)</th>
+                </tr>
+                <tr>
+                    <td><b>Applicant fee</b></td>
+                    <td>1</td>
+                    <td>{kes(applicant_fee_kes)}</td>
+                    <td>{eur(applicant_fee_eur)}</td>
+                </tr>
+                <tr>
+                    <td>Booth Fee</td>
+                    <td>{doc.booth_count or 0}</td>
+                    <td>{kes(total_booth_kes)}</td>
+                    <td>{eur(total_booth_eur)}</td>
+                </tr>
+                <tr>
+                    <td>Attendee Fee</td>
+                    <td>{len(doc.attendees or [])}</td>
+                    <td>{kes(total_attendee_kes)}</td>
+                    <td>{eur(total_attendee_eur)}</td>
+                </tr>
+            </table>
+
+            <table class="totals">
+                <tr>
+                    <td class="bold">Subtotal</td>
+                    <td>{kes(total_kes)}</td>
+                    <td>{eur(total_eur)}</td>
+                </tr>
+                <tr>
+                    <td class="bold">VAT (0%)</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td class="bold">Total</td>
+                    <td class="bold">{kes(total_kes)}</td>
+                    <td class="bold">{eur(total_eur)}</td>
+                </tr>
+            </table>
+            <div style="clear: both;"></div>
+            <div class="page-break"></div>
+
+            <p><span class="bold">Terms of payment:</span><br>
+            - Should be paid <span class="bold">within 7 days on the date on this invoice.</span><br>
+            - All transfer fees are to be paid by the client<br>
+            - Regarding VAT, the supplied services are subject to reverse charge in the country of receipt.<br>
+            - When paying by bank transfer, please state your <span class="bold">organization name</span>
             </p>
-            <p>
-                Quercus Group Ltd | Pin: P051526263L | C/O Climate Innovation Center, Ole Sangale Road, Madaraka Estate <br>
+            <table style="border-collapse: collapse; width: 100%;">
+                <tr style="background-color: rgba(203, 201, 159, 1);">
+                    <td colspan="2">Payment instructions:</td>
+                </tr>
+                <tr style="background-color: rgba(203, 201, 159, 1);">
+                    <td colspan="2"><p style="padding:10px;">Payment can be made in either cash, cash transfer or even cheque to either of accounts below:</p></td>
+                </tr>
+                <tr style="background: rgba(236, 236, 221, 0.05);">
+                    <td>
+                        <p><span class="bold">Payment in KES:</span><br>
+                        Account name: Quercus Group Ltd.<br>
+                        Bank: NCBA<br>
+                        Account no: 7494880018<br>
+                        Bank Address: 30437-00100<br>
+                        Branch code: 07000<br>
+                        Swift code: CBAFKENX</p>
+                        <p>For MPESA Payments, Kindly use Paybill number <br> <b>880100</b> and use the above details.</p>
+                    </td>
+                    <td>
+                        <p><span class="bold">Payment in Euros:</span><br>
+                        Account name: Quercus Group Ltd.<br>
+                        Bank: NCBA<br>
+                        Account no: 7494880023<br>
+                        Bank Address: 30437-00100<br>
+                        Branch code: 07000<br>
+                        Swift code: CBAFKENX</p>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin-top:30px;">
+                Co – organizing team,<br>
+                Innovate for WASH Forum<br>
+                +254723341220
+            </p>
+
+            <div class="footer">
+                Quercus Group Ltd | Pin: P051526263L | C/O Climate Innovation Center, Ole Sangale Road, Madaraka Estate<br>
                 Box 59857 - 00200 Nairobi, Kenya | www.quercus-group.com | info@quercus-group.com
-            </p>
-        </div>
-    </body>
+            </div>
+        </body>
     </html>
 
     """

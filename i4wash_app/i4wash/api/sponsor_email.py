@@ -45,6 +45,13 @@ def contact_sponsor(fullName, email, organization, role, message):
     safe_organization = clean_input(organization)
     safe_role = clean_input(role)
 
+    # Get the default email account dynamically
+    default_recipient = frappe.db.get_value(
+        "Email Account",
+        {"default_outgoing": 1},
+        "email_id"
+    ) or "admin@example.com"  # fallback
+
     # Step 1: Send the email
     subject = f"{safe_role.capitalize()} Inquiry: {safe_organization or safe_name}"
     safe_message_html = message.replace("\n", "<br>")
@@ -57,7 +64,7 @@ def contact_sponsor(fullName, email, organization, role, message):
         <p>{safe_message_html}</p>
     """
     frappe.sendmail(
-        recipients=["hekimalibrary@gmail.com"],
+        recipients=[default_recipient],
         subject=subject,
         message=body,
         reply_to=email,
