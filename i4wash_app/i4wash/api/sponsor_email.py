@@ -1,60 +1,34 @@
-# import frappe
-# import re
-# from frappe import _
-
-# def clean_input(text):
-#     # Remove any character that's not a letter, number, dash, or space
-#     return re.sub(r"[^\w\s\-]", "", text or "")
-
-# @frappe.whitelist(allow_guest=True)
-# def contact_sponsor(fullName, email, organization, role, message):
-#     safe_name = clean_input(fullName)
-#     safe_organization = clean_input(organization)
-#     safe_role = clean_input(role)
-
-#     subject = f"{safe_role.capitalize()} Inquiry: {safe_organization or safe_name}"
-
-#     body = f"""
-#     <p><strong>Name:</strong> {safe_name}</p>
-#     <p><strong>Email:</strong> {email}</p>
-#     <p><strong>Organization:</strong> {safe_organization or "Not provided"}</p>
-#     <p><strong>Role:</strong> {safe_role.capitalize()}</p>
-#     <p><strong>Message:</strong></p>
-#     <p>{message.replace('\n', '<br>')}</p>
-#     """
-
-#     frappe.sendmail(
-#         recipients=["hekimalibrary@gmail.com"],
-#         subject=subject,
-#         message=body,
-#         reply_to=email
-#     )
-
-#     return {"status": "success", "message": "Email sent"}
-
 import frappe
 import re
-from frappe import _
 
 def clean_input(text):
     return re.sub(r"[^\w\s\-]", "", text or "")
 
 @frappe.whitelist(allow_guest=True)
-def contact_sponsor(fullName, email, organization, role, message):
+def contact_sponsor(**kwargs):
+    fullName = kwargs.get("fullName")
+    email = kwargs.get("email")
+    organization = kwargs.get("organization")
+    role = kwargs.get("role", "sponsor")
+    message = kwargs.get("message")
+
+    if not fullName or not email or not message:
+        frappe.throw("Missing required fields")
+
     safe_name = clean_input(fullName)
     safe_organization = clean_input(organization)
     safe_role = clean_input(role)
 
-    # Get the default email account dynamically
+    # Get default recipient from Email Account, fallback to admin@example.com
     default_recipient = frappe.db.get_value(
         "Email Account",
         {"default_outgoing": 1},
         "email_id"
-    ) or "admin@example.com"  # fallback
+    ) or "admin@example.com"
 
-    # Step 1: Send the email
     subject = f"{safe_role.capitalize()} Inquiry: {safe_organization or safe_name}"
-    safe_message_html = message.replace("\n", "<br>")
+    safe_message_html = (message or "").replace("\n", "<br>")
+
     body = f"""
         <p><strong>Name:</strong> {safe_name}</p>
         <p><strong>Email:</strong> {email}</p>
@@ -63,6 +37,8 @@ def contact_sponsor(fullName, email, organization, role, message):
         <p><strong>Message:</strong></p>
         <p>{safe_message_html}</p>
     """
+
+    # Send email
     frappe.sendmail(
         recipients=[default_recipient],
         subject=subject,
@@ -71,10 +47,10 @@ def contact_sponsor(fullName, email, organization, role, message):
         now=True
     )
 
-    # Step 2: Save to Doctype
+    # Save to Doctype if not exists
     existing = frappe.db.exists(
         "Sponsors and Conveners",
-        {"email": email, "role": role.capitalize()}
+        {"email": email, "role": safe_role.capitalize()}
     )
 
     if not existing:
@@ -83,15 +59,12 @@ def contact_sponsor(fullName, email, organization, role, message):
             "full_name": fullName,
             "email": email,
             "organization": organization,
-            "role": role.capitalize()
+            "role": safe_role.capitalize()
         })
         doc.insert(ignore_permissions=True)
-
-    frappe.db.commit()
-
-    if not existing:
-        message = "Email sent and contact saved."
+        frappe.db.commit()
+        message_out = "Email sent and contact saved."
     else:
-        message = "Email sent. Contact already exists."
+        message_out = "Email sent. Contact already exists."
 
-    return {"status": "success", "message": message}
+    return {"status": "success", "message": message_out}
